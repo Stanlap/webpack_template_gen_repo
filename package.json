@@ -27,9 +27,7 @@
     "webpack": "^4.43.0",
     "webpack-cli": "^3.3.12",
     "webpack-dev-server": "^3.11.0",
-    "webpack-merge": "^4.2.2"
-  },
-  "dependencies": {
+    "webpack-merge": "^4.2.2",
     "@babel/core": "^7.10.3",
     "@babel/preset-env": "^7.10.3",
     "babel-loader": "^8.1.0"
@@ -37,5 +35,10 @@
   "browserslist": [
     "> 1%",
     "last 3 version"
-  ]
+  ],
+  "dependencies": {
+    "bootstrap": "^4.5.0",
+    "jquery": "^3.5.1",
+    "popper.js": "^1.16.1"
+  }
 }

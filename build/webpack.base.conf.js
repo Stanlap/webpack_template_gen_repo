@@ -1,4 +1,5 @@
 const path = require('path')
+const webpack = require('webpack')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const MiniCssExtractPlugin = require("mini-css-extract-plugin")
@@ -70,6 +71,12 @@ paths: PATHS
 ]
   },
   plugins: [
+    new webpack.ProvidePlugin({
+$: 'jquery',
+jQuery: 'jquery',
+jquery: 'jquery',
+Popper: ['popper.js', 'default']
+    }),
     new MiniCssExtractPlugin({
       filename: `${PATHS.assets}css/[name].[hash].css`,
     }),
