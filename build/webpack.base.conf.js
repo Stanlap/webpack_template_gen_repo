@@ -4,12 +4,14 @@ const CopyWebpackPlugin = require('copy-webpack-plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const MiniCssExtractPlugin = require("mini-css-extract-plugin")
 const {CleanWebpackPlugin} = require('clean-webpack-plugin')
+const HtmlWebpackPartialsPlugin = require('html-webpack-partials-plugin')
+const optimizeCssAssetsWebpackPlugin = require('optimize-css-assets-webpack-plugin')
+const TerserWebpackPlugin = require('terser-webpack-plugin')
 const PATHS={
-  src:path.join(__dirname,'../src'),
-  dist:path.join(__dirname,'../dist'),
+  src:path.resolve(__dirname,'../src'),
+  dist:path.resolve(__dirname,'../dist'),
 assets:'assets/'
 }
-const HtmlWebpackPartialsPlugin = require('html-webpack-partials-plugin')
 
 
 module.exports = {
@@ -23,7 +25,7 @@ paths: PATHS
       },
     
      output: {
-        filename: `${PATHS.assets}js/[name].[hash].js`,
+        filename: `${PATHS.assets}js/[name].[contenthash].bundle.js`,
         path: PATHS.dist,
         publicPath: '/'
       },
@@ -39,6 +41,12 @@ paths: PATHS
             }
           }
         },
+//         resolve:{
+// extensions: ['.js','.json', '.png'],
+// alias: {
+//   @....: ...path...,
+// }
+//         },
   module: {
     rules: [
     {
@@ -47,27 +55,41 @@ paths: PATHS
       exclude: '/node_modules/'
     },
     {
-      test: /\.(png|jpg|gif|svg)$/,
+      test: /\.(png|jpe?g|gif|svg)$/,
       loader: 'file-loader',
       options: {
         name: '[name].[ext]',
-      }
+        outputPath:PATHS.dist,
+        useRelativePath: true
+            }
     }, 
     {
       test: /\.css$/,
-      use: [
-        'style-loader',
-        MiniCssExtractPlugin.loader,
-        {
-          loader: 'css-loader',
-          options: { sourceMap: true }
-        }, {
-          loader: 'postcss-loader',
-          options: { sourceMap: true, config: { path: `${PATHS.src}/js/postcss.config.js`}
-         }
-        }
-      ]
-    }
+    use: [ {
+      loader:MiniCssExtractPlugin.loader,
+      options:{
+        hmr: true,
+        reloadAll: true
+      }
+    },
+      'css-loader']
+  }
+    // {
+    //   test: /\.css$/,
+    //   use: [
+    //     'style-loader',
+    //     MiniCssExtractPlugin.loader,
+    //     {
+    //       loader: 'css-loader',
+    //       options: { sourceMap: true }
+    //     }, 
+    //     {
+    //       loader: 'postcss-loader',
+    //       options: { sourceMap: true, config: { path: `${PATHS.src}/js/postcss.config.js`}
+    //      }
+    //     }
+    //   ]
+    // }
 ]
   },
   plugins: [
@@ -78,19 +100,24 @@ jquery: 'jquery',
 Popper: ['popper.js', 'default']
     }),
     new MiniCssExtractPlugin({
-      filename: `${PATHS.assets}css/[name].[hash].css`,
+      filename: `${PATHS.assets}css/[name].[contenthash].css`,
     }),
     new CopyWebpackPlugin({
       patterns: [
-        { from: `${PATHS.src}/img`, to: `${PATHS.assets}/img` },
-        { from: `${PATHS.src}/static`, to: '' }
+        { from: 'favicon.ico', to: `${PATHS.dist}/` },
+        { from: `${PATHS.src}/img`, to: `${PATHS.assets}/img` }
         ]
     }),
     new CleanWebpackPlugin(),
 
     new HtmlWebpackPlugin({
+      title: 'First page',
+      files: '/favicon.ico',
       template: `${PATHS.src}/views/index.ejs`,
       filename: './index.html',
+      minify: {
+collapseWhitespace: true
+      }
       // inject: false
     }),
     new HtmlWebpackPlugin({
