@@ -1,0 +1,18 @@
+﻿html,
+body {
+    height: 100%;
+}
+
+.preReference,
+.reference {
+    cursor: help
+}
+
+@media (min-width: 650px) {
+    .wCol {
+        max-width: 650px;
+    }
+}
+P { 
+    text-indent: 1.5em;
+   }
